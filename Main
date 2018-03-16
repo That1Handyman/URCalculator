@@ -90,19 +90,22 @@ public class URCalculator {
 				//For variables, we have to run through until there are no more characters in the array
 				//Then we declare a new variable by inserting it into the hashmap
 				if(Character.isLetter(tempArray[i])) {
-					System.out.println("Is Letter" + tempArray[i]);
+					System.out.println("Is Letter " + tempArray[i]);
 					String temp;	//declare new temp string
 					//We need to create a temp string now that will keep attending additional chars that are part of that string
 					
 					temp = Character.toString(tempArray[i]);
 					System.out.println(temp);
-					//int size = tempArray.length - 1;
 					
-					while(Character.isLetter(tempArray[i + 1]) && tempArray[i + 1] != tempArray.length) {
+					// CHANGE THIS WITH A FOR LOOP
+					if(i < tempArray.length-1) {
+					while(Character.isLetter(tempArray[i + 1]) ) {
+					
+						System.out.println("We are in index " + i);
 						temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
 						System.out.println(temp);
 						i++;
-					
+					}
 					}
 					
 					System.out.println("The combined variable temp is " + temp );

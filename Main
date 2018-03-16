@@ -70,7 +70,7 @@ public class URCalculator {
 		System.out.println(input);
 		
 		//ONE BIG FOR LOOP (To initialize variables)
-		for ( int i = 0; i < tempArray.length ; i++ ) {
+		for ( int i = 0; i < tempArray.length; i++ ) {
 				System.out.println(tempArray[i]);
 				
 				//If the Character is a digit
@@ -97,16 +97,31 @@ public class URCalculator {
 					temp = Character.toString(tempArray[i]);
 					System.out.println(temp);
 					
+
+///////////////////////////////////////////////////////////////////////////////////IF IS CHARACTER | APPEND TO STRING VARIABLE//////////////////////////////////////////////////					
 					// CHANGE THIS WITH A FOR LOOP
-					if(i < tempArray.length-1) {
-					while(Character.isLetter(tempArray[i + 1]) ) {
+					if(i < tempArray.length - 1) {
+					while(Character.isLetter(tempArray[i+1]) && i <= tempArray.length - 2 ) {
 					
 						System.out.println("We are in index " + i);
 						temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
 						System.out.println(temp);
+						
+						//if(i < tempArray.length - 2) {
 						i++;
+						System.out.println(i + " i is this, this is length " + tempArray.length);
+					
+						if(i==tempArray.length -1) {
+							break;
+						}
 					}
+					System.out.println("While loop has finished");
+					
+					
+					
 					}
+					System.out.println("The current char is " + tempArray[i]);
+					
 					
 					System.out.println("The combined variable temp is " + temp );
 					variables.put(temp, default1);		//Initializing variable into HashMap, with default value of 0.0
@@ -129,7 +144,7 @@ public class URCalculator {
 				}
 				
 		
-		
+/////////////////////////////////////////////////////////////////////PRINTING QUEUE AND STACK FOR VISUALIZATION//////////////////////////////////////////////////////////////		
 		//QUEUE TEST ( Check what we have inside so far )
 		System.out.println("Queue:");
 		for(String s : output) { 
@@ -149,6 +164,7 @@ public class URCalculator {
 		
 }
 	
+
 ////////////////////////////////////////////////////////////////////////////PRINTS OUT THE POSTFIX EXPRESSION//////////////////////////////////////////////////////////	
 private static void PrintOutput(Queue<String> output) {
 		// TODO Auto-generated method stub

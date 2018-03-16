@@ -53,14 +53,14 @@ public class URCalculator {
 		
 		Double default1 = 0.0;
 		
-		priorities.put(")",5);
-		priorities.put("(",5);
-		priorities.put("=", 4);
-		priorities.put("^", 3);
-		priorities.put("*", 2);
-		priorities.put("/", 2);
-		priorities.put("+", 1);
-		priorities.put("-", 1);
+		priorities.put(")",1);
+		priorities.put("(",1);
+		priorities.put("=", 0);
+		//priorities.put("^", 4);
+		priorities.put("*", 4);
+		priorities.put("/", 4);
+		priorities.put("+", 3);
+		priorities.put("-", 3);
 		
 		//Syntax for checking if character is digit ( very useful )
 		//https://stackoverflow.com/questions/4047808/what-is-the-best-way-to-tell-if-a-character-is-a-letter-or-number-in-java-withou
@@ -69,8 +69,8 @@ public class URCalculator {
 		
 		System.out.println(input);
 		
-		//ONE BIG FOR LOOP
-		for ( int i = 0; i < tempArray.length; i++ ) {
+		//ONE BIG FOR LOOP (To initialize variables)
+		for ( int i = 0; i < tempArray.length ; i++ ) {
 				System.out.println(tempArray[i]);
 				
 				//If the Character is a digit
@@ -85,7 +85,6 @@ public class URCalculator {
 					//To add to our String queue
 					output.add(temp);
 					
-					
 				}
 				
 				//For variables, we have to run through until there are no more characters in the array
@@ -97,15 +96,17 @@ public class URCalculator {
 					
 					temp = Character.toString(tempArray[i]);
 					System.out.println(temp);
+					//int size = tempArray.length - 1;
 					
 					while(Character.isLetter(tempArray[i + 1]) && tempArray[i + 1] != tempArray.length) {
 						temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
 						System.out.println(temp);
 						i++;
+					
 					}
 					
 					System.out.println("The combined variable temp is " + temp );
-					variables.put(temp, default1);
+					variables.put(temp, default1);		//Initializing variable into HashMap, with default value of 0.0
 					System.out.println("Stored in HashMap" + variables.get(temp));
 					System.out.println(" The value of Frank is " + variables.get("Frank") );
 					
@@ -132,6 +133,10 @@ public class URCalculator {
 			  System.out.println(s.toString()); 
 			}
 		
+		System.out.println("Stack:");
+		for(String s : operators) { 
+			  System.out.println(s.toString()); 
+			}
 			
 		
 	}
@@ -141,7 +146,7 @@ public class URCalculator {
 		
 }
 	
-	
+////////////////////////////////////////////////////////////////////////////PRINTS OUT THE POSTFIX EXPRESSION//////////////////////////////////////////////////////////	
 private static void PrintOutput(Queue<String> output) {
 		// TODO Auto-generated method stub
 	
@@ -160,7 +165,7 @@ private static void PrintOutput(Queue<String> output) {
 		while(!operators.isEmpty()) {
 			String temp = operators.peek();
 			output.add(temp);
-			System.out.println("Adding from stack to queue " + temp );
+			System.out.println("Adding from stack to output " + temp );
 			operators.pop();
 		}
 		
@@ -175,29 +180,62 @@ private static void PrintOutput(Queue<String> output) {
 		//If empty then simply push
 		if(operators.isEmpty()) {
 			operators.push(check);
-			System.out.println("Pushed " + operators.peek());
+			System.out.println("Pushed " + operators.peek() + " to empty stack");
+			return;	//Return, otherwise it will run into some errors.
 		}
 		
 		String temp = operators.peek();	// this is the stack's top
 		
-		//Higher Precedence
+		if(priorities.get(temp) == priorities.get(check)) {
+			System.out.println(temp +  " has same precedence as " + check);
+			output.add(operators.peek());
+			operators.pop();
+			operators.push(check);
+		}
+		
+		//Lower Precedence ( NEEDS FIXING )
 		if(priorities.get(temp) > priorities.get(check))  {
 			System.out.println(temp + " Is greater than " + check);
+			//System.out.println("Inserting " + check);
+			
+			while(priorities.get(temp) >= priorities.get(check)) {
+				System.out.println("Adding " + operators.peek());
+				output.add(operators.peek());
+				operators.pop();
+				
+				
+				
+				if(AskEmpty(operators) == true) {
+					operators.push(check);		//At the end of clearing, we push the operator we're checking
+					return;
+				}
+				
+			}
+		
+		}
+		
+		//Higher Precedence ( GOOD! )
+		if(priorities.get(temp) < priorities.get(check))  {
+			System.out.println(temp + " Is less than " + check);
 			System.out.println("Inserting " + check);
 			operators.push(check);
 		}
 		
 		
-		if(priorities.get(temp) < priorities.get(check))  {
-			System.out.println(temp + " Is less than " + check);
-			//System.out.println("Inserting " + check);
-			while(priorities.get(temp) < priorities.get(check)) {
-				output.add(temp);
-				
-			}
-			//operators.push(check);
-		}
+		
+		
+		
+		
 		
 	}
+
+private static boolean AskEmpty(Stack<String> operators) {
+	// TODO Auto-generated method stub
+	if(operators.isEmpty()) {
+		System.out.println("Stack is Empty, stopping process");
+		return true;
+	}
+	return false;
+}
 	
 }

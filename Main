@@ -53,8 +53,14 @@ public class URCalculator {
 		
 		Double default1 = 0.0;
 		
-		priorities.put(")",1);
+		
+		//Option: Parenthesis should not have priority
+		priorities.put(")", 5);
 		priorities.put("(",1);
+		//priorities.put("]",1);
+		//priorities.put("[",1);
+		//priorities.put("}",1);
+		//priorities.put("{",1);
 		priorities.put("=", 0);
 		//priorities.put("^", 4);
 		priorities.put("*", 4);
@@ -72,6 +78,7 @@ public class URCalculator {
 		//ONE BIG FOR LOOP (To initialize variables)
 		for ( int i = 0; i < tempArray.length; i++ ) {
 				System.out.println(tempArray[i]);
+				
 				
 				//If the Character is a digit
 				if(Character.isDigit(tempArray[i])) {
@@ -137,6 +144,8 @@ public class URCalculator {
 				//It converts the character from the array if the other if statements are not valid
 				String check = Character.toString(tempArray[i]);
 				
+				
+				
 				if(priorities.containsKey(check)) {		//If it is 
 					System.out.println("We have in our HashMap " + check);
 					Precedence(operators,priorities, check, output);				//PRECEDENCE METHOD
@@ -193,8 +202,10 @@ private static void PrintOutput(Queue<String> output) {
 ///////////////////////////////////////////////////////////////////////////////PRECEDENCE////////////////////////////////////////////////////////////////////////	
 	
 	//I created a method that checks for precedence. This was to get some spacing and structure
-	private static void Precedence(Stack<String> operators, HashMap<String, Integer> priorities, String check, Queue<String> output) {
+	private static void Precedence(Stack<String> operators, HashMap<String, Integer> priorities, String check, Queue<String> output)  {
 		// TODO Auto-generated method stub
+		
+		
 		
 		//If empty then simply push
 		if(operators.isEmpty()) {
@@ -203,7 +214,22 @@ private static void PrintOutput(Queue<String> output) {
 			return;	//Return, otherwise it will run into some errors.
 		}
 		
+		
 		String temp = operators.peek();	// this is the stack's top
+		
+		if(priorities.get(temp) == 1) {
+			operators.push(temp);
+			return;
+		}
+		
+		if(priorities.get(temp) == 5) {
+			while(priorities.get(operators.peek())!= 5 ) {
+				output.add(operators.peek());
+				operators.pop();
+			}
+			operators.pop();
+			return;
+		}
 		
 		if(priorities.get(temp) == priorities.get(check)) {
 			System.out.println(temp +  " has same precedence as " + check);
@@ -230,16 +256,32 @@ private static void PrintOutput(Queue<String> output) {
 				}
 				
 			}
+			
 		
 		}
 		
-		//Higher Precedence ( GOOD! )
+		//Higher Precedence ( GOOD! )	| We simply push onto the top of the stack
 		if(priorities.get(temp) < priorities.get(check))  {
 			System.out.println(temp + " Is less than " + check);
 			System.out.println("Inserting " + check);
 			operators.push(check);
 		}
+		/*
+		if(check == "(") {
+			operators.push(check);
+		}
 		
+		
+		if(check == ")") {
+			System.out.println("RELEASING THE KRAKEN!");
+			while(operators.peek() != "(") {
+				output.add(operators.peek());
+				operators.pop();
+			}
+			//Once it has finished and we have meet the opening parenthesis...
+			
+			operators.pop();
+		}*/
 		
 		
 		

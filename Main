@@ -282,6 +282,12 @@ private static void PostFixEval(Queue<String> output, HashMap<String, Double> va
 
 private static void Operation(Stack<String> eval, HashMap<String, Double> variables) {
 	// TODO Auto-generated method stub
+	
+	//FINAL STACK TO POP OUT ANSWER
+	Stack<String> answer = new Stack<String>();
+	
+	boolean isAssignment = false;
+	
 	System.out.println("Processing Stack:");
 	for(String p : eval) { 
 		System.out.println(p.toString()); 
@@ -329,31 +335,42 @@ private static void Operation(Stack<String> eval, HashMap<String, Double> variab
 				Division(g,h , eval);
 				break;
 				
+//I thought about making a while loop inside this case statement
+//It was not recommended as it would make my code unreadable
+//https://stackoverflow.com/questions/36252878/can-you-use-a-while-loop-inside-a-case-in-switch-statement-in-c				
+				
 			case "=":
-				String j = eval.peek();
-				eval.pop();
-				String i = eval.peek();
-				eval.pop();
-				Assignment(i,j,eval, variables);
+				isAssignment = true;
+				Equals(eval, variables , answer);
 				break;
 		}
 	}
+	
+	if(isAssignment == true) {
+		Assignment(answer, variables);
+	}
+	
+}
+
+private static void Assignment(Stack<String> answer, HashMap<String, Double> variables) {
+	// TODO Auto-generated method stub
 	
 }
 
 //Check if the variable has a hashmap default value otherwise operation invalid( It should work though )
 //We assign whatever one variable is to a nother ( usually a number to a variable )
 //We store that in the hashmap
-private static void Assignment(String i, String j, Stack<String> eval, HashMap<String, Double> variables) {
+private static void Equals(Stack<String> eval, HashMap<String, Double> variables, Stack<String> answer) {
 	// TODO Auto-generated method stub
 	
-	
-	if(variables.containsKey(i) && variables.containsKey(j) ) {
-		System.out.println("Both variables exist.");
-		
+	//This method anticipates variables
+	while(!eval.isEmpty() || eval.peek() != "=") {
+		answer.push(eval.peek());
+		eval.pop();
 	}
-
+	
 }
+
 
 
 //The rest of these should be pretty basic
@@ -361,17 +378,53 @@ private static void Assignment(String i, String j, Stack<String> eval, HashMap<S
 private static void Division(String g, String h, Stack<String> eval) {
 	// TODO Auto-generated method stub
 	
+	//String to Double
+		//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+			
+		double second = Double.parseDouble(h);
+		double first = Double.parseDouble(g);
+		double result = (first / second);
+			
+		//Double to String
+		//https://stackoverflow.com/questions/5766318/converting-double-to-string
+		String total = String.valueOf(result);
+		eval.push(total);
+		
 }
 
 ////////////////////////////////////////////////////////MULTIPLICATION CALLED////////////////////////////////////
 private static void Multiplication(String e, String f, Stack<String> eval) {
 	// TODO Auto-generated method stub
 	
+	//String to Double
+			//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+			
+			double second = Double.parseDouble(f);
+			double first = Double.parseDouble(e);
+			double result = (first * second);
+			
+			//Double to String
+			//https://stackoverflow.com/questions/5766318/converting-double-to-string
+			String total = String.valueOf(result);
+			eval.push(total);
+		
 }
 
 /////////////////////////////////////////////////////////SUBTRACTION CALLED////////////////////////////////////
 private static void Subtraction(String c, String d, Stack<String> eval) {
 	// TODO Auto-generated method stub
+	
+		//String to Double
+		//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+		
+		double second = Double.parseDouble(d);
+		double first = Double.parseDouble(c);
+		double result = (first - second);
+		
+		//Double to String
+		//https://stackoverflow.com/questions/5766318/converting-double-to-string
+		String total = String.valueOf(result);
+		eval.push(total);
 	
 }
 
@@ -379,6 +432,16 @@ private static void Subtraction(String c, String d, Stack<String> eval) {
 private static void Addition(String a, String b, Stack<String> eval) {
 	// TODO Auto-generated method stub
 	
+	//String to Double
+	//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+	
+	double second = Double.parseDouble(b);
+	double first = Double.parseDouble(a);
+	double result = (first + second);
+	
+	//Double to String
+	String total = String.valueOf(result);
+	eval.push(total);
 }
 
 ////////////////////////////////////////////////////////////////////////////PRINTS OUT THE POSTFIX EXPRESSION//////////////////////////////////////////////////////////	

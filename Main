@@ -260,14 +260,102 @@ private static void PostFixEval(Queue<String> output) {
 	}*/	
 			
 			
-			
-			System.out.println("Final stack:");
+			//TEST Queue print to see that queue has been filtered
+			System.out.println("Final Queue:");
 			for(String p : clean) { 
 				System.out.println(p.toString()); 
 				}
+		//As it is transferring the numbers and operators from, Queue to Stack,	it will "evaluate" when an operator comes into play.
+		while(!clean.isEmpty()) {
+			eval.push(clean.peek());
+			clean.poll();
+			Operation(eval);
+		}
 			
-		
+		System.out.println("Final Stack:");
+		for(String p : eval) { 
+			System.out.println(p.toString()); 
+			}
 	}
+
+////////////////////////////////////////////////////////////////////////////FINAL OPERATION EVALUATOR ////////////////////////////////////////////////////////////
+
+private static void Operation(Stack<String> eval) {
+	// TODO Auto-generated method stub
+	System.out.println("Processing Stack:");
+	for(String p : eval) { 
+		System.out.println(p.toString()); 
+		}
+	
+	if(eval.peek().equals("+") || eval.peek().equals("-") || eval.peek().equals("*") || eval.peek().equals("/") || eval.peek().equals("=")) {
+		String operator = eval.peek();	//we assign operator and clear it from stack
+		eval.pop();
+		System.out.println("Operator detected, new peek is " + eval.peek());
+		
+		//Initiate switch cases, the number evaluation will begin on the top two numbers
+		switch(operator) {
+			
+		//Remember that the first one becomes 'b', and second one is 'a'
+		//To operate as a ( operator ) b
+			case "+": 
+				String b = eval.peek();
+				eval.pop();
+				String a = eval.peek();
+				eval.pop();
+				Addition(a,b);
+				break;
+			
+			case "-":
+				String d = eval.peek();
+				eval.pop();
+				String c = eval.peek();
+				eval.pop();
+				Subtraction(c,d);
+				break;
+				
+			case "*":
+				String f = eval.peek();
+				eval.pop();
+				String e = eval.peek();
+				eval.pop();
+				Multiplication(e,f);
+				break;
+				
+			case "/":
+				String h = eval.peek();
+				eval.pop();
+				String g = eval.peek();
+				eval.pop();
+				Division(g,h);
+		}
+	}
+	
+}
+
+
+////////////////////////////////////////////////////////DIVISION CALLED////////////////////////////////////
+private static void Division(String g, String h) {
+	// TODO Auto-generated method stub
+	
+}
+
+////////////////////////////////////////////////////////MULTIPLICATION CALLED////////////////////////////////////
+private static void Multiplication(String e, String f) {
+	// TODO Auto-generated method stub
+	
+}
+
+/////////////////////////////////////////////////////////SUBTRACTION CALLED////////////////////////////////////
+private static void Subtraction(String c, String d) {
+	// TODO Auto-generated method stub
+	
+}
+
+//////////////////////////////////////////////////////ADDITION CALLED////////////////////////////////////////////////////////
+private static void Addition(String a, String b) {
+	// TODO Auto-generated method stub
+	
+}
 
 ////////////////////////////////////////////////////////////////////////////PRINTS OUT THE POSTFIX EXPRESSION//////////////////////////////////////////////////////////	
 private static void PrintOutput(Queue<String> output) {

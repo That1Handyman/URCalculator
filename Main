@@ -216,7 +216,7 @@ public class URCalculator {
 		
 		EmptyStack(operators, output);		//EMPTY STACK METHOD
 		PrintOutput(output);
-		PostFixEval(output);
+		PostFixEval(output,variables);
 }
 	
 
@@ -235,7 +235,7 @@ private static void ClosingParent(Queue<String> output, Stack<String> operators)
 
 	
 ////////////////////////////////////////////////////////POSTFIX EVALUATION///////////////////////////////////////////////////////////////////////////////////////////////	
-private static void PostFixEval(Queue<String> output) {
+private static void PostFixEval(Queue<String> output, HashMap<String, Double> variables) {
 		// TODO Auto-generated method stub
 	Queue<String> clean = new LinkedList<String>();
 	Stack<String> eval = new Stack<String>();
@@ -269,7 +269,7 @@ private static void PostFixEval(Queue<String> output) {
 		while(!clean.isEmpty()) {
 			eval.push(clean.peek());
 			clean.poll();
-			Operation(eval);
+			Operation(eval,variables);
 		}
 			
 		System.out.println("Final Stack:");
@@ -280,7 +280,7 @@ private static void PostFixEval(Queue<String> output) {
 
 ////////////////////////////////////////////////////////////////////////////FINAL OPERATION EVALUATOR ////////////////////////////////////////////////////////////
 
-private static void Operation(Stack<String> eval) {
+private static void Operation(Stack<String> eval, HashMap<String, Double> variables) {
 	// TODO Auto-generated method stub
 	System.out.println("Processing Stack:");
 	for(String p : eval) { 
@@ -302,7 +302,7 @@ private static void Operation(Stack<String> eval) {
 				eval.pop();
 				String a = eval.peek();
 				eval.pop();
-				Addition(a,b);
+				Addition(a,b , eval);
 				break;
 			
 			case "-":
@@ -310,7 +310,7 @@ private static void Operation(Stack<String> eval) {
 				eval.pop();
 				String c = eval.peek();
 				eval.pop();
-				Subtraction(c,d);
+				Subtraction(c,d , eval);
 				break;
 				
 			case "*":
@@ -318,7 +318,7 @@ private static void Operation(Stack<String> eval) {
 				eval.pop();
 				String e = eval.peek();
 				eval.pop();
-				Multiplication(e,f);
+				Multiplication(e,f, eval);
 				break;
 				
 			case "/":
@@ -326,33 +326,57 @@ private static void Operation(Stack<String> eval) {
 				eval.pop();
 				String g = eval.peek();
 				eval.pop();
-				Division(g,h);
+				Division(g,h , eval);
+				break;
+				
+			case "=":
+				String j = eval.peek();
+				eval.pop();
+				String i = eval.peek();
+				eval.pop();
+				Assignment(i,j,eval, variables);
+				break;
 		}
 	}
 	
 }
 
+//Check if the variable has a hashmap default value otherwise operation invalid( It should work though )
+//We assign whatever one variable is to a nother ( usually a number to a variable )
+//We store that in the hashmap
+private static void Assignment(String i, String j, Stack<String> eval, HashMap<String, Double> variables) {
+	// TODO Auto-generated method stub
+	
+	
+	if(variables.containsKey(i) && variables.containsKey(j) ) {
+		System.out.println("Both variables exist.");
+		
+	}
 
+}
+
+
+//The rest of these should be pretty basic
 ////////////////////////////////////////////////////////DIVISION CALLED////////////////////////////////////
-private static void Division(String g, String h) {
+private static void Division(String g, String h, Stack<String> eval) {
 	// TODO Auto-generated method stub
 	
 }
 
 ////////////////////////////////////////////////////////MULTIPLICATION CALLED////////////////////////////////////
-private static void Multiplication(String e, String f) {
+private static void Multiplication(String e, String f, Stack<String> eval) {
 	// TODO Auto-generated method stub
 	
 }
 
 /////////////////////////////////////////////////////////SUBTRACTION CALLED////////////////////////////////////
-private static void Subtraction(String c, String d) {
+private static void Subtraction(String c, String d, Stack<String> eval) {
 	// TODO Auto-generated method stub
 	
 }
 
 //////////////////////////////////////////////////////ADDITION CALLED////////////////////////////////////////////////////////
-private static void Addition(String a, String b) {
+private static void Addition(String a, String b, Stack<String> eval) {
 	// TODO Auto-generated method stub
 	
 }

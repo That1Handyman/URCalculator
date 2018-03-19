@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -39,6 +40,12 @@ public class URCalculator {
 		
 		input = input.replaceAll("\\s", "");	// we remove all whitespaces
 		
+		if(input.equals("exit")) {
+			System.out.println("Exiting");
+			System.exit(0);	//https://stackoverflow.com/questions/22452930/terminating-a-java-program
+			
+		}
+		
 		ShuntingYard(input);
 		
 		
@@ -76,20 +83,20 @@ public class URCalculator {
 				System.out.println(tempArray[i]);
 				
 				
-				if(tempArray[i] == '(') {
+				if(tempArray[i] == '('|| tempArray[i] == '[' || tempArray[i] == '{') {
 					String parenthesis;
 					parenthesis = Character.toString(tempArray[i]);
 					System.out.println("OPEN PARENTHESIS");
-					priorities.put("(",-1);
+					priorities.put(parenthesis,-1);
 					operators.push(parenthesis);
 					continue;	//We skip checking precedence here
 				}
 				
-				if(tempArray[i] == ')') {
+				if(tempArray[i] == ')' || tempArray[i] == ']' || tempArray[i] == '}') {
 					String parenthesis;
 					parenthesis = Character.toString(tempArray[i]);
 					System.out.println("CLOSING PARENTHESIS");
-					priorities.put(")", -1);
+					priorities.put(parenthesis, -1);
 					//ClosingParent(output,operators);
 				}
 				
@@ -227,11 +234,38 @@ private static void ClosingParent(Queue<String> output, Stack<String> operators)
 	*/
 
 	
-////////////////////////////////////////////////////////POSTFIX EVALUATION//////////////////////////////////////////////////	
+////////////////////////////////////////////////////////POSTFIX EVALUATION///////////////////////////////////////////////////////////////////////////////////////////////	
 private static void PostFixEval(Queue<String> output) {
 		// TODO Auto-generated method stub
+	Queue<String> clean = new LinkedList<String>();
+	Stack<String> eval = new Stack<String>();
+	
+	while(!output.isEmpty()) {
+		if(output.peek().equals(")")|| output.peek().equals("(")|| output.peek().equals("{")|| output.peek().equals("}")|| output.peek().equals("[") || output.peek().equals("]")) {
+			
+			System.out.println("POLLING " + output.peek());
+			output.poll();
+			continue;		//VERY IMPORTANT! OTHERWISE, ERROR!
+		}
+		
+		//eval.push(output.peek());
+		clean.add(output.peek());
+		output.poll();
+	}
 	
 	
+	/*
+	if((it == ")") || (it == "(") || (it == "[") || (it == "]") || (it == "{") || (it == "}") ) {
+		it.hasNext();
+	}*/	
+			
+			
+			
+			System.out.println("Final stack:");
+			for(String p : clean) { 
+				System.out.println(p.toString()); 
+				}
+			
 		
 	}
 

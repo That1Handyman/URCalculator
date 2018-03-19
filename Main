@@ -271,11 +271,12 @@ private static void PostFixEval(Queue<String> output, HashMap<String, Double> va
 			clean.poll();
 			Operation(eval,variables);
 		}
-			
+		
+		/*
 		System.out.println("Final Stack:");
 		for(String p : eval) { 
 			System.out.println(p.toString()); 
-			}
+			}*/
 	}
 
 ////////////////////////////////////////////////////////////////////////////FINAL OPERATION EVALUATOR ////////////////////////////////////////////////////////////
@@ -346,14 +347,58 @@ private static void Operation(Stack<String> eval, HashMap<String, Double> variab
 		}
 	}
 	
+	/*
 	if(isAssignment == true) {
 		Assignment(answer, variables);
 	}
-	
+	*/
 }
 
+public static boolean isNumeric(String str)
+{
+  try
+  {
+    double d = Double.parseDouble(str);
+  }
+  catch(NumberFormatException nfe)
+  {
+    return false;
+  }
+  return true;
+}
+
+
+////////////////////////////////////////////// OPERATION IS ASSIGNMENT /////////////////////////////////////
 private static void Assignment(Stack<String> answer, HashMap<String, Double> variables) {
 	// TODO Auto-generated method stub
+	
+
+	String assigner = answer.peek();
+	
+	if(isNumeric(assigner) == true) {
+		double constant = Double.parseDouble(assigner);
+			
+	
+	while(!answer.isEmpty()) {
+		System.out.println("Temp being assigned to " + answer.peek());
+		String temp = answer.peek();
+		if(variables.containsKey(temp)) {
+			variables.replace(temp, 0.0 ,constant );
+		}
+		if(!variables.containsKey(temp)) {
+			System.out.println("Variable " + temp + " Is not defined!");
+			//MAKE A METHOD THAT CALLS FOR INPUT AGAIN
+		}
+		
+		answer.pop();
+		System.out.println("Temp being assigned to " + answer.peek());
+		temp = answer.peek();
+		
+	}
+		
+	}else {
+		System.out.println("ERROR: VARIABLES HAVE NOT BEEN INITIALIZED");
+	}
 	
 }
 
@@ -364,7 +409,7 @@ private static void Equals(Stack<String> eval, HashMap<String, Double> variables
 	// TODO Auto-generated method stub
 	
 	//This method anticipates variables
-	while(!eval.isEmpty() || eval.peek() != "=") {
+	while(!eval.isEmpty() && eval.peek() != "=") {
 		answer.push(eval.peek());
 		eval.pop();
 	}

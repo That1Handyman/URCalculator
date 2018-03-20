@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -32,12 +33,15 @@ public class URCalculator {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.print(">>");
-		
+		System.out.print(">");
 		Scanner in = new Scanner(System.in);
 		String input = in.nextLine();	//NOTE:next() was only reading 5
-		
 		input = input.replaceAll("\\s", "");	// we remove all whitespaces
+		if(input.equals("exit")) {
+			System.out.println("Exiting");
+			System.exit(0);	//https://stackoverflow.com/questions/22452930/terminating-a-java-program
+			
+		}
 		
 		ShuntingYard(input);
 		
@@ -53,8 +57,10 @@ public class URCalculator {
 		
 		Double default1 = 0.0;
 		
-		priorities.put(")",1);
-		priorities.put("(",1);
+		//priorities.put(")",1);
+		//priorities.put("(",1);
+		//priorities.put(")",-1);
+		//priorities.put("(",-1);
 		priorities.put("=", 0);
 		//priorities.put("^", 4);
 		priorities.put("*", 4);
@@ -70,9 +76,29 @@ public class URCalculator {
 		System.out.println(input);
 		
 		//ONE BIG FOR LOOP (To initialize variables)
-		for ( int i = 0; i < tempArray.length ; i++ ) {
+		for ( int i = 0; i < tempArray.length; i++ ) {
 				System.out.println(tempArray[i]);
 				
+				
+				if(tempArray[i] == '('|| tempArray[i] == '[' || tempArray[i] == '{') {
+					String parenthesis;
+					parenthesis = Character.toString(tempArray[i]);
+					System.out.println("OPEN PARENTHESIS");
+					priorities.put(parenthesis,-1);
+					operators.push(parenthesis);
+					continue;	//We skip checking precedence here
+				}
+				
+				if(tempArray[i] == ')' || tempArray[i] == ']' || tempArray[i] == '}') {
+					String parenthesis;
+					parenthesis = Character.toString(tempArray[i]);
+					System.out.println("CLOSING PARENTHESIS");
+					priorities.put(parenthesis, -1);
+					//ClosingParent(output,operators);
+				}
+				
+				
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////				
 				//If the Character is a digit
 				if(Character.isDigit(tempArray[i])) {
 					System.out.println("Is Digit" + tempArray[i]);
@@ -82,11 +108,34 @@ public class URCalculator {
 					temp = Character.toString(tempArray[i]);
 					System.out.println("the temp added is " + temp);
 					
+					if(i < tempArray.length - 1) {
+						while(Character.isDigit(tempArray[i+1]) || ('.' == tempArray[i+1])  && i <= tempArray.length - 2 ) {
+						
+							System.out.println("We are in index " + i);
+							temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
+							System.out.println(temp);
+							
+							//if(i < tempArray.length - 2) {
+							i++;
+							System.out.println(i + " i is this, this is length " + tempArray.length);
+						
+							if(i==tempArray.length -1) {
+								break;
+							}
+						}
+						System.out.println("While loop has finished");
+						
+						
+						
+						}
+					
 					//To add to our String queue
 					output.add(temp);
 					
 				}
+
 				
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////					
 				//For variables, we have to run through until there are no more characters in the array
 				//Then we declare a new variable by inserting it into the hashmap
 				if(Character.isLetter(tempArray[i])) {
@@ -97,14 +146,31 @@ public class URCalculator {
 					temp = Character.toString(tempArray[i]);
 					System.out.println(temp);
 					
+
+///////////////////////////////////////////////////////////////////////////////////IF IS CHARACTER | APPEND TO STRING VARIABLE//////////////////////////////////////////////////					
 					// CHANGE THIS WITH A FOR LOOP
-					while(Character.isLetter(tempArray[i + 1]) ) {
+					if(i < tempArray.length - 1) {
+					while(Character.isLetter(tempArray[i+1]) && i <= tempArray.length - 2 ) {
 					
 						System.out.println("We are in index " + i);
 						temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
 						System.out.println(temp);
+						
+						//if(i < tempArray.length - 2) {
 						i++;
+						System.out.println(i + " i is this, this is length " + tempArray.length);
+					
+						if(i==tempArray.length -1) {
+							break;
+						}
 					}
+					System.out.println("While loop has finished");
+					
+					
+					
+					}
+					System.out.println("The current char is " + tempArray[i]);
+					
 					
 					System.out.println("The combined variable temp is " + temp );
 					variables.put(temp, default1);		//Initializing variable into HashMap, with default value of 0.0
@@ -120,14 +186,17 @@ public class URCalculator {
 				//It converts the character from the array if the other if statements are not valid
 				String check = Character.toString(tempArray[i]);
 				
+				
+				
 				if(priorities.containsKey(check)) {		//If it is 
 					System.out.println("We have in our HashMap " + check);
 					Precedence(operators,priorities, check, output);				//PRECEDENCE METHOD
 					//operators.push(check);
 				}
 				
+				
 		
-		
+/////////////////////////////////////////////////////////////////////PRINTING QUEUE AND STACK FOR VISUALIZATION//////////////////////////////////////////////////////////////		
 		//QUEUE TEST ( Check what we have inside so far )
 		System.out.println("Queue:");
 		for(String s : output) { 
@@ -144,9 +213,506 @@ public class URCalculator {
 		
 		EmptyStack(operators, output);		//EMPTY STACK METHOD
 		PrintOutput(output);
+		PostFixEval(output,variables);
+}
+
+
+	
+////////////////////////////////////////////////////////POSTFIX EVALUATION///////////////////////////////////////////////////////////////////////////////////////////////	
+private static void PostFixEval(Queue<String> output, HashMap<String, Double> variables) {
+		// TODO Auto-generated method stub
+	Queue<String> clean = new LinkedList<String>();
+	Stack<String> eval = new Stack<String>();
+	
+	while(!output.isEmpty()) {
+		if(output.peek().equals(")")|| output.peek().equals("(")|| output.peek().equals("{")|| output.peek().equals("}")|| output.peek().equals("[") || output.peek().equals("]")) {
+			
+			System.out.println("POLLING " + output.peek());
+			output.poll();
+			continue;		//VERY IMPORTANT! OTHERWISE, ERROR!
+		}
 		
+		//eval.push(output.peek());
+		clean.add(output.peek());
+		output.poll();
+	}
+	
+	
+	/*
+	if((it == ")") || (it == "(") || (it == "[") || (it == "]") || (it == "{") || (it == "}") ) {
+		it.hasNext();
+	}*/	
+			
+			
+			//TEST Queue print to see that queue has been filtered
+			System.out.println("Final Queue:");
+			for(String p : clean) { 
+				System.out.println(p.toString()); 
+				}
+		//As it is transferring the numbers and operators from, Queue to Stack,	it will "evaluate" when an operator comes into play.
+		while(!clean.isEmpty()) {
+			eval.push(clean.peek());
+			clean.poll();
+			Operation(eval,variables);
+		}
+		
+		//DOES NOT PRINT IF IS ASSIGNMENT
+		
+		System.out.println(">" + eval.peek());
+		/*
+		if(isNumeric(eval.peek())) {
+		}
+		*/
+		////////////////////////////////////////////////////////
+		
+		//TEST CASES
+		System.out.println("The value of a is " + variables.get("a"));
+		System.out.println("The value of b is " + variables.get("b"));
+		System.out.println("The value of c is " + variables.get("c"));
+		System.out.println("The value of d is " + variables.get("d"));
+		
+		/*
+		if(eval.size()>1) {
+			System.out.println("No assignment");
+		}
+		*/
+		//This is a re-statement
+		System.out.print(">");
+		Scanner in = new Scanner(System.in);
+		String input = in.nextLine();	//NOTE:next() was only reading 5
+		input = input.replaceAll("\\s", "");	// we remove all whitespaces
+		
+		if(input.equals("exit")) {
+			System.out.println("Exiting");
+			System.exit(0);	//https://stackoverflow.com/questions/22452930/terminating-a-java-program
+			
+		}
+		
+		Input(variables,input);
+		/*for(String p : eval) { 
+			System.out.println(p.toString()); 
+			}*/
+	}
+
+////////////////////////////////////////////////////////////////////////////FINAL OPERATION EVALUATOR ////////////////////////////////////////////////////////////
+
+private static void Input(HashMap<String, Double> variables, String input) {
+	// TODO Auto-generated method stub
+	Queue<String> output = new LinkedList<String>();
+	Stack<String> operators = new Stack<String>();
+	HashMap<String,Integer> priorities = new HashMap();
+	
+	Double default1 = 0.0;
+	
+	//priorities.put(")",1);
+	//priorities.put("(",1);
+	//priorities.put(")",-1);
+	//priorities.put("(",-1);
+	priorities.put("=", 0);
+	//priorities.put("^", 4);
+	priorities.put("*", 4);
+	priorities.put("/", 4);
+	priorities.put("+", 3);
+	priorities.put("-", 3);
+	
+	char tempArray[] = input.toCharArray();
+	
+	System.out.println(input);
+	
+	//ONE BIG FOR LOOP (To initialize variables)
+	for ( int i = 0; i < tempArray.length; i++ ) {
+			System.out.println(tempArray[i]);
+			
+			
+			if(tempArray[i] == '('|| tempArray[i] == '[' || tempArray[i] == '{') {
+				String parenthesis;
+				parenthesis = Character.toString(tempArray[i]);
+				System.out.println("OPEN PARENTHESIS");
+				priorities.put(parenthesis,-1);
+				operators.push(parenthesis);
+				continue;	//We skip checking precedence here
+			}
+			
+			if(tempArray[i] == ')' || tempArray[i] == ']' || tempArray[i] == '}') {
+				String parenthesis;
+				parenthesis = Character.toString(tempArray[i]);
+				System.out.println("CLOSING PARENTHESIS");
+				priorities.put(parenthesis, -1);
+				//ClosingParent(output,operators);
+			}
+			
+			
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////				
+			//If the Character is a digit
+			if(Character.isDigit(tempArray[i])) {
+				System.out.println("Is Digit" + tempArray[i]);
+				String temp;
+				
+				//Then we convert to a temp string variable 
+				temp = Character.toString(tempArray[i]);
+				System.out.println("the temp added is " + temp);
+				
+				if(i < tempArray.length - 1) {
+					while(Character.isDigit(tempArray[i+1]) || ('.' == tempArray[i+1])  && i <= tempArray.length - 2 ) {
+					
+						System.out.println("We are in index " + i);
+						temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
+						System.out.println(temp);
+						
+						//if(i < tempArray.length - 2) {
+						i++;
+						System.out.println(i + " i is this, this is length " + tempArray.length);
+					
+						if(i==tempArray.length -1) {
+							break;
+						}
+					}
+					System.out.println("While loop has finished");
+					
+					
+					
+					}
+				
+				//To add to our String queue
+				output.add(temp);
+				
+			}
+
+			
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////					
+			//For variables, we have to run through until there are no more characters in the array
+			//Then we declare a new variable by inserting it into the hashmap
+			if(Character.isLetter(tempArray[i])) {
+				System.out.println("Is Letter " + tempArray[i]);
+				String temp;	//declare new temp string
+				//We need to create a temp string now that will keep attending additional chars that are part of that string
+				
+				temp = Character.toString(tempArray[i]);
+				System.out.println(temp);
+				
+
+///////////////////////////////////////////////////////////////////////////////////IF IS CHARACTER | APPEND TO STRING VARIABLE//////////////////////////////////////////////////					
+				// CHANGE THIS WITH A FOR LOOP
+				if(i < tempArray.length - 1) {
+				while(Character.isLetter(tempArray[i+1]) && i <= tempArray.length - 2 ) {
+				
+					System.out.println("We are in index " + i);
+					temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
+					System.out.println(temp);
+					
+					//if(i < tempArray.length - 2) {
+					i++;
+					System.out.println(i + " i is this, this is length " + tempArray.length);
+				
+					if(i==tempArray.length -1) {
+						break;
+					}
+				}
+				System.out.println("While loop has finished");
+				
+				
+				
+				}
+				System.out.println("The current char is " + tempArray[i]);
+				
+				
+				System.out.println("The combined variable temp is " + temp );
+				variables.put(temp, default1);		//Initializing variable into HashMap, with default value of 0.0
+				System.out.println("Stored in HashMap" + variables.get(temp));
+				System.out.println(" The value of Frank is " + variables.get("Frank") );
+				
+				output.add(temp);
+			}
+			
+			//IF none of these if statements hold true, then we assume the char is an operator +-*/()
+			
+			//this is a dynamic temporary variable named "check"
+			//It converts the character from the array if the other if statements are not valid
+			String check = Character.toString(tempArray[i]);
+			
+			
+			
+			if(priorities.containsKey(check)) {		//If it is 
+				System.out.println("We have in our HashMap " + check);
+				Precedence(operators,priorities, check, output);				//PRECEDENCE METHOD
+				//operators.push(check);
+			}
+			
+			
+	
+/////////////////////////////////////////////////////////////////////PRINTING QUEUE AND STACK FOR VISUALIZATION//////////////////////////////////////////////////////////////		
+	//QUEUE TEST ( Check what we have inside so far )
+	System.out.println("Queue:");
+	for(String s : output) { 
+		  System.out.println(s.toString()); 
+		}
+	
+	System.out.println("Stack:");
+	for(String s : operators) { 
+		  System.out.println(s.toString()); 
+		}
+		
+	
 }
 	
+	EmptyStack(operators, output);		//EMPTY STACK METHOD
+	PrintOutput(output);
+	PostFixEval(output,variables);
+	
+}
+
+private static void Operation(Stack<String> eval, HashMap<String, Double> variables) {
+	// TODO Auto-generated method stub
+	
+	//FINAL STACK TO POP OUT ANSWER
+	Stack<String> answer = new Stack<String>();
+	
+	//boolean isAssignment = false;
+	
+	System.out.println("Processing Stack:");
+	for(String p : eval) { 
+		System.out.println(p.toString()); 
+		}
+	
+	if(eval.peek().equals("+") || eval.peek().equals("-") || eval.peek().equals("*") || eval.peek().equals("/") || eval.peek().equals("=")) {
+		String operator = eval.peek();	//we assign operator and clear it from stack
+		eval.pop();
+		System.out.println("Operator detected, new peek is " + eval.peek());
+		
+		//Initiate switch cases, the number evaluation will begin on the top two numbers
+		switch(operator) {
+			
+		//Remember that the first one becomes 'b', and second one is 'a'
+		//To operate as a ( operator ) b
+			case "+": 
+				String b = eval.peek();
+				eval.pop();
+				String a = eval.peek();
+				eval.pop();
+				Addition(a,b , eval);
+				break;
+			
+			case "-":
+				String d = eval.peek();
+				eval.pop();
+				String c = eval.peek();
+				eval.pop();
+				Subtraction(c,d , eval);
+				break;
+				
+			case "*":
+				String f = eval.peek();
+				eval.pop();
+				String e = eval.peek();
+				eval.pop();
+				Multiplication(e,f, eval);
+				break;
+				
+			case "/":
+				String h = eval.peek();
+				if(Double.parseDouble(h) == 0.0) {
+					System.out.println("ERROR: Division by zero");
+					return;
+				}
+				
+				eval.pop();
+				String g = eval.peek();
+				eval.pop();
+				Division(g,h , eval);
+				break;
+				
+//I thought about making a while loop inside this case statement
+//It was not recommended as it would make my code unreadable
+//https://stackoverflow.com/questions/36252878/can-you-use-a-while-loop-inside-a-case-in-switch-statement-in-c				
+				
+			case "=":
+				
+				String j = eval.peek();
+				
+				if(!isNumeric(j)) {
+					break;
+				}
+				
+				eval.pop();
+				String i = eval.peek();
+				//eval.pop();
+				Assignment(i,j,eval,variables);
+				//isAssignment = true;
+				//Equals(eval, variables , answer);	// answer is only for assignment
+				
+				
+				break;
+		}
+	}
+	
+	
+	
+	
+}
+
+
+private static void Assignment(String i, String j, Stack<String> eval, HashMap<String, Double> variables) {
+	// TODO Auto-generated method stub
+	
+	double assigner = Double.parseDouble(j);
+	//i = eval.peek();
+	
+	while(!eval.isEmpty()) {
+		variables.put(eval.peek(), assigner);
+		eval.pop();
+		//i = eval.peek();
+	}
+	
+	//The right value is always numberic
+	/*if(isNumeric(j) == true) {
+		System.out.println(j + " is numeric");
+		
+		double convert = Double.parseDouble(j);
+		
+		variables.put(i, convert);
+		System.out.println("The value of " + i + " is " + variables.get(i));
+	}*/
+}
+
+///////////////////////////////////////////IS NUMERIC?////////////////////////////////////////////////////
+public static boolean isNumeric(String str)
+{
+  try
+  {
+    double d = Double.parseDouble(str);
+  }
+  catch(NumberFormatException nfe)
+  {
+    return false;
+  }
+  return true;
+}
+
+
+////////////////////////////////////////////// OPERATION IS ASSIGNMENT /////////////////////////////////////
+/*private static void Assignment(Stack<String> answer, HashMap<String, Double> variables) {
+	// TODO Auto-generated method stub
+	
+
+	String assigner = answer.peek();
+	
+	if(isNumeric(assigner) == true) {
+		double constant = Double.parseDouble(assigner);
+			
+	
+	while(!answer.isEmpty()) {
+		System.out.println("Temp being assigned to " + answer.peek());
+		String temp = answer.peek();
+		if(variables.containsKey(temp)) {
+			variables.replace(temp, 0.0 ,constant );
+		}
+		if(!variables.containsKey(temp)) {
+			System.out.println("Variable " + temp + " Is not defined!");
+			//MAKE A METHOD THAT CALLS FOR INPUT AGAIN
+		}
+		
+		answer.pop();
+		System.out.println("Temp being assigned to " + answer.peek());
+		temp = answer.peek();
+		
+	}
+		
+	}
+	else {
+		System.out.println("ERROR: VARIABLES HAVE NOT BEEN INITIALIZED");
+	}
+	System.out.println("The value of a is " + variables.get("a"));
+}
+*/
+//Check if the variable has a hashmap default value otherwise operation invalid( It should work though )
+//We assign whatever one variable is to a nother ( usually a number to a variable )
+//We store that in the hashmap
+
+/*
+private static void Equals(Stack<String> eval, HashMap<String, Double> variables, Stack<String> answer) {
+	// TODO Auto-generated method stub
+	
+	//This method anticipates variables
+	while(!eval.isEmpty() && eval.peek() != "=") {
+		answer.push(eval.peek());
+		eval.pop();
+	}
+	
+}
+*/
+
+
+//The rest of these should be pretty basic
+////////////////////////////////////////////////////////DIVISION CALLED////////////////////////////////////
+private static void Division(String g, String h, Stack<String> eval) {
+	// TODO Auto-generated method stub
+	
+	//String to Double
+		//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+			
+		double second = Double.parseDouble(h);
+		double first = Double.parseDouble(g);
+		double result = (first / second);
+			
+		//Double to String
+		//https://stackoverflow.com/questions/5766318/converting-double-to-string
+		String total = String.valueOf(result);
+		eval.push(total);
+		
+}
+
+////////////////////////////////////////////////////////MULTIPLICATION CALLED////////////////////////////////////
+private static void Multiplication(String e, String f, Stack<String> eval) {
+	// TODO Auto-generated method stub
+	
+	//String to Double
+			//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+			
+			double second = Double.parseDouble(f);
+			double first = Double.parseDouble(e);
+			double result = (first * second);
+			
+			//Double to String
+			//https://stackoverflow.com/questions/5766318/converting-double-to-string
+			String total = String.valueOf(result);
+			eval.push(total);
+		
+}
+
+/////////////////////////////////////////////////////////SUBTRACTION CALLED////////////////////////////////////
+private static void Subtraction(String c, String d, Stack<String> eval) {
+	// TODO Auto-generated method stub
+	
+		//String to Double
+		//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+		
+		double second = Double.parseDouble(d);
+		double first = Double.parseDouble(c);
+		double result = (first - second);
+		
+		//Double to String
+		//https://stackoverflow.com/questions/5766318/converting-double-to-string
+		String total = String.valueOf(result);
+		eval.push(total);
+	
+}
+
+//////////////////////////////////////////////////////ADDITION CALLED////////////////////////////////////////////////////////
+private static void Addition(String a, String b, Stack<String> eval) {
+	// TODO Auto-generated method stub
+	
+	//String to Double
+	//https://stackoverflow.com/questions/5769669/convert-string-to-double-in-java
+	
+	double second = Double.parseDouble(b);
+	double first = Double.parseDouble(a);
+	double result = (first + second);
+	
+	//Double to String
+	String total = String.valueOf(result);
+	eval.push(total);
+}
+
 ////////////////////////////////////////////////////////////////////////////PRINTS OUT THE POSTFIX EXPRESSION//////////////////////////////////////////////////////////	
 private static void PrintOutput(Queue<String> output) {
 		// TODO Auto-generated method stub
@@ -178,6 +744,7 @@ private static void PrintOutput(Queue<String> output) {
 	private static void Precedence(Stack<String> operators, HashMap<String, Integer> priorities, String check, Queue<String> output) {
 		// TODO Auto-generated method stub
 		
+		
 		//If empty then simply push
 		if(operators.isEmpty()) {
 			operators.push(check);
@@ -186,6 +753,7 @@ private static void PrintOutput(Queue<String> output) {
 		}
 		
 		String temp = operators.peek();	// this is the stack's top
+		
 		
 		if(priorities.get(temp) == priorities.get(check)) {
 			System.out.println(temp +  " has same precedence as " + check);
@@ -197,20 +765,26 @@ private static void PrintOutput(Queue<String> output) {
 		//Lower Precedence ( NEEDS FIXING )
 		if(priorities.get(temp) > priorities.get(check))  {
 			System.out.println(temp + " Is greater than " + check);
-			//System.out.println("Inserting " + check);
 			
-			while(priorities.get(temp) >= priorities.get(check)) {
+			
+			//ERROR
+			while(priorities.get(temp) > priorities.get(check)) {
 				System.out.println("Adding " + operators.peek());
 				output.add(operators.peek());
 				operators.pop();
 				
 				
-				
+		
+
 				if(AskEmpty(operators) == true) {
 					operators.push(check);		//At the end of clearing, we push the operator we're checking
 					return;
 				}
-				
+			
+				temp = operators.peek();
+				Precedence(operators, priorities, temp, output);	//It is possible it might've missed the equal
+				//operator. So to avoid adding everything from our stack we call this again for a possible
+				// '==' to work on
 			}
 		
 		}

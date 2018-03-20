@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -33,13 +34,10 @@ public class URCalculator {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.print(">>");
-		
+		System.out.print(">");
 		Scanner in = new Scanner(System.in);
 		String input = in.nextLine();	//NOTE:next() was only reading 5
-		
 		input = input.replaceAll("\\s", "");	// we remove all whitespaces
-		
 		if(input.equals("exit")) {
 			System.out.println("Exiting");
 			System.exit(0);	//https://stackoverflow.com/questions/22452930/terminating-a-java-program
@@ -86,7 +84,7 @@ public class URCalculator {
 				if(tempArray[i] == '('|| tempArray[i] == '[' || tempArray[i] == '{') {
 					String parenthesis;
 					parenthesis = Character.toString(tempArray[i]);
-					System.out.println("OPEN PARENTHESIS");
+					//System.out.println("OPEN PARENTHESIS");
 					priorities.put(parenthesis,-1);
 					operators.push(parenthesis);
 					continue;	//We skip checking precedence here
@@ -95,7 +93,7 @@ public class URCalculator {
 				if(tempArray[i] == ')' || tempArray[i] == ']' || tempArray[i] == '}') {
 					String parenthesis;
 					parenthesis = Character.toString(tempArray[i]);
-					System.out.println("CLOSING PARENTHESIS");
+					//System.out.println("CLOSING PARENTHESIS");
 					priorities.put(parenthesis, -1);
 					//ClosingParent(output,operators);
 				}
@@ -104,29 +102,29 @@ public class URCalculator {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////				
 				//If the Character is a digit
 				if(Character.isDigit(tempArray[i])) {
-					System.out.println("Is Digit" + tempArray[i]);
+					//System.out.println("Is Digit" + tempArray[i]);
 					String temp;
 					
 					//Then we convert to a temp string variable 
 					temp = Character.toString(tempArray[i]);
-					System.out.println("the temp added is " + temp);
+					//System.out.println("the temp added is " + temp);
 					
 					if(i < tempArray.length - 1) {
 						while(Character.isDigit(tempArray[i+1]) || ('.' == tempArray[i+1])  && i <= tempArray.length - 2 ) {
 						
-							System.out.println("We are in index " + i);
+							//System.out.println("We are in index " + i);
 							temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
-							System.out.println(temp);
+							//System.out.println(temp);
 							
 							//if(i < tempArray.length - 2) {
 							i++;
-							System.out.println(i + " i is this, this is length " + tempArray.length);
+							//System.out.println(i + " i is this, this is length " + tempArray.length);
 						
 							if(i==tempArray.length -1) {
 								break;
 							}
 						}
-						System.out.println("While loop has finished");
+						//System.out.println("While loop has finished");
 						
 						
 						
@@ -142,12 +140,12 @@ public class URCalculator {
 				//For variables, we have to run through until there are no more characters in the array
 				//Then we declare a new variable by inserting it into the hashmap
 				if(Character.isLetter(tempArray[i])) {
-					System.out.println("Is Letter " + tempArray[i]);
+					//System.out.println("Is Letter " + tempArray[i]);
 					String temp;	//declare new temp string
 					//We need to create a temp string now that will keep attending additional chars that are part of that string
 					
 					temp = Character.toString(tempArray[i]);
-					System.out.println(temp);
+					//System.out.println(temp);
 					
 
 ///////////////////////////////////////////////////////////////////////////////////IF IS CHARACTER | APPEND TO STRING VARIABLE//////////////////////////////////////////////////					
@@ -155,30 +153,30 @@ public class URCalculator {
 					if(i < tempArray.length - 1) {
 					while(Character.isLetter(tempArray[i+1]) && i <= tempArray.length - 2 ) {
 					
-						System.out.println("We are in index " + i);
+						//System.out.println("We are in index " + i);
 						temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
-						System.out.println(temp);
+						//System.out.println(temp);
 						
 						//if(i < tempArray.length - 2) {
 						i++;
-						System.out.println(i + " i is this, this is length " + tempArray.length);
+						//System.out.println(i + " i is this, this is length " + tempArray.length);
 					
 						if(i==tempArray.length -1) {
 							break;
 						}
 					}
-					System.out.println("While loop has finished");
+					//System.out.println("While loop has finished");
 					
 					
 					
 					}
-					System.out.println("The current char is " + tempArray[i]);
+					//System.out.println("The current char is " + tempArray[i]);
 					
 					
-					System.out.println("The combined variable temp is " + temp );
+					//System.out.println("The combined variable temp is " + temp );
 					variables.put(temp, default1);		//Initializing variable into HashMap, with default value of 0.0
-					System.out.println("Stored in HashMap" + variables.get(temp));
-					System.out.println(" The value of Frank is " + variables.get("Frank") );
+					//System.out.println("Stored in HashMap" + variables.get(temp));
+					//System.out.println(" The value of Frank is " + variables.get("Frank") );
 					
 					output.add(temp);
 				}
@@ -192,7 +190,7 @@ public class URCalculator {
 				
 				
 				if(priorities.containsKey(check)) {		//If it is 
-					System.out.println("We have in our HashMap " + check);
+					//System.out.println("We have in our HashMap " + check);
 					Precedence(operators,priorities, check, output);				//PRECEDENCE METHOD
 					//operators.push(check);
 				}
@@ -201,7 +199,7 @@ public class URCalculator {
 		
 /////////////////////////////////////////////////////////////////////PRINTING QUEUE AND STACK FOR VISUALIZATION//////////////////////////////////////////////////////////////		
 		//QUEUE TEST ( Check what we have inside so far )
-		System.out.println("Queue:");
+		/*System.out.println("Queue:");
 		for(String s : output) { 
 			  System.out.println(s.toString()); 
 			}
@@ -211,27 +209,14 @@ public class URCalculator {
 			  System.out.println(s.toString()); 
 			}
 			
-		
+		*/
 	}
 		
 		EmptyStack(operators, output);		//EMPTY STACK METHOD
-		PrintOutput(output);
+		//PrintOutput(output);
 		PostFixEval(output,variables);
 }
-	
 
-
-/*
-private static void ClosingParent(Queue<String> output, Stack<String> operators) {
-		// TODO Auto-generated method stub
-		while(operators.peek() != "(" ) {
-			output.add(operators.peek());
-			operators.pop();
-		}
-		operators.pop();
-		return;
-	}
-	*/
 
 	
 ////////////////////////////////////////////////////////POSTFIX EVALUATION///////////////////////////////////////////////////////////////////////////////////////////////	
@@ -243,7 +228,7 @@ private static void PostFixEval(Queue<String> output, HashMap<String, Double> va
 	while(!output.isEmpty()) {
 		if(output.peek().equals(")")|| output.peek().equals("(")|| output.peek().equals("{")|| output.peek().equals("}")|| output.peek().equals("[") || output.peek().equals("]")) {
 			
-			System.out.println("POLLING " + output.peek());
+			//System.out.println("POLLING " + output.peek());
 			output.poll();
 			continue;		//VERY IMPORTANT! OTHERWISE, ERROR!
 		}
@@ -261,10 +246,11 @@ private static void PostFixEval(Queue<String> output, HashMap<String, Double> va
 			
 			
 			//TEST Queue print to see that queue has been filtered
-			System.out.println("Final Queue:");
+			/*System.out.println("Final Queue:");
 			for(String p : clean) { 
 				System.out.println(p.toString()); 
 				}
+			*/	
 		//As it is transferring the numbers and operators from, Queue to Stack,	it will "evaluate" when an operator comes into play.
 		while(!clean.isEmpty()) {
 			eval.push(clean.peek());
@@ -272,32 +258,237 @@ private static void PostFixEval(Queue<String> output, HashMap<String, Double> va
 			Operation(eval,variables);
 		}
 		
+		//ANSWER!
+		//DOES NOT PRINT IF IS ASSIGNMENT
+		//if(isNumeric(eval.peek())) {
+		if(!eval.isEmpty()) {
+		System.out.println(">" + eval.peek());	//ANSWERs
+		}
+		//}
+		
+		////////////////////////////////////////////////////////
+		
+		//TEST CASES
+		
+		//System.out.println("The value of a is " + variables.get("a"));
+		//System.out.println("The value of b is " + variables.get("b"));
+		//System.out.println("The value of c is " + variables.get("c"));
+		//System.out.println("The value of d is " + variables.get("d"));
+		
 		/*
-		System.out.println("Final Stack:");
-		for(String p : eval) { 
+		if(eval.size()>1) {
+			System.out.println("No assignment");
+		}
+		*/
+		//This is a re-statement
+		System.out.print(">");
+		Scanner in = new Scanner(System.in);
+		String input = in.nextLine();	//NOTE:next() was only reading 5
+		input = input.replaceAll("\\s", "");	// we remove all whitespaces
+		
+		if(input.equals("exit")) {
+			System.out.println("Exiting");
+			System.exit(0);	//https://stackoverflow.com/questions/22452930/terminating-a-java-program
+			
+		}
+		
+		if(input.equals("showall")) {
+			System.out.println(Collections.singletonList(variables));
+			
+			//System.out.print(">");
+			Scanner in2 = new Scanner(System.in);
+			String input2 = in.nextLine();	//NOTE:next() was only reading 5
+			input = input2.replaceAll("\\s", "");	// we remove all whitespaces
+			
+			Input(variables,input2);
+		}
+		
+		if(input.equals("clearall")) {
+			variables.clear();
+			
+			Scanner in2 = new Scanner(System.in);
+			String input2 = in.nextLine();	//NOTE:next() was only reading 5
+			input = input2.replaceAll("\\s", "");	// we remove all whitespaces
+			
+			Input(variables,input2);
+		}
+		
+		//if(input.substring(beginIndex, endIndex))
+		
+		Input(variables,input);
+		/*for(String p : eval) { 
 			System.out.println(p.toString()); 
 			}*/
 	}
 
 ////////////////////////////////////////////////////////////////////////////FINAL OPERATION EVALUATOR ////////////////////////////////////////////////////////////
 
+private static void Input(HashMap<String, Double> variables, String input) {
+	// TODO Auto-generated method stub
+	Queue<String> output = new LinkedList<String>();
+	Stack<String> operators = new Stack<String>();
+	HashMap<String,Integer> priorities = new HashMap();
+	
+	Double default1 = 0.0;
+	
+	//priorities.put(")",1);
+	//priorities.put("(",1);
+	//priorities.put(")",-1);
+	//priorities.put("(",-1);
+	priorities.put("=", 0);
+	//priorities.put("^", 4);
+	priorities.put("*", 4);
+	priorities.put("/", 4);
+	priorities.put("+", 3);
+	priorities.put("-", 3);
+	
+	char tempArray[] = input.toCharArray();
+	
+	System.out.println(input);
+	
+	//ONE BIG FOR LOOP (To initialize variables)
+	for ( int i = 0; i < tempArray.length; i++ ) {
+			System.out.println(tempArray[i]);
+			
+			
+			if(tempArray[i] == '('|| tempArray[i] == '[' || tempArray[i] == '{') {
+				String parenthesis;
+				parenthesis = Character.toString(tempArray[i]);
+				System.out.println("OPEN PARENTHESIS");
+				priorities.put(parenthesis,-1);
+				operators.push(parenthesis);
+				continue;	//We skip checking precedence here
+			}
+			
+			if(tempArray[i] == ')' || tempArray[i] == ']' || tempArray[i] == '}') {
+				String parenthesis;
+				parenthesis = Character.toString(tempArray[i]);
+				System.out.println("CLOSING PARENTHESIS");
+				priorities.put(parenthesis, -1);
+				//ClosingParent(output,operators);
+			}
+			
+			
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////				
+			//If the Character is a digit
+			if(Character.isDigit(tempArray[i])) {
+				//System.out.println("Is Digit" + tempArray[i]);
+				String temp;
+				
+				//Then we convert to a temp string variable 
+				temp = Character.toString(tempArray[i]);
+				//System.out.println("the temp added is " + temp);
+				
+				if(i < tempArray.length - 1) {
+					while(Character.isDigit(tempArray[i+1]) || ('.' == tempArray[i+1])  && i <= tempArray.length - 2 ) {
+					
+						//System.out.println("We are in index " + i);
+						temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
+						System.out.println(temp);
+						
+						//if(i < tempArray.length - 2) {
+						i++;
+						//System.out.println(i + " i is this, this is length " + tempArray.length);
+					
+						if(i==tempArray.length -1) {
+							break;
+						}
+					}
+					//System.out.println("While loop has finished");
+					
+					
+					
+					}
+				
+				//To add to our String queue
+				output.add(temp);
+				
+			}
+
+			
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////					
+			//For variables, we have to run through until there are no more characters in the array
+			//Then we declare a new variable by inserting it into the hashmap
+			if(Character.isLetter(tempArray[i])) {
+				//System.out.println("Is Letter " + tempArray[i]);
+				String temp;	//declare new temp string
+				//We need to create a temp string now that will keep attending additional chars that are part of that string
+				
+				temp = Character.toString(tempArray[i]);
+				//System.out.println(temp);
+				
+
+///////////////////////////////////////////////////////////////////////////////////IF IS CHARACTER | APPEND TO STRING VARIABLE//////////////////////////////////////////////////					
+				// CHANGE THIS WITH A FOR LOOP
+				if(i < tempArray.length - 1) {
+				while(Character.isLetter(tempArray[i+1]) && i <= tempArray.length - 2 ) {
+				
+					//System.out.println("We are in index " + i);
+					temp = temp + tempArray[i + 1];	//Appending char to string ( anticipates spacing )
+					//System.out.println(temp);
+					
+					//if(i < tempArray.length - 2) {
+					i++;
+					//System.out.println(i + " i is this, this is length " + tempArray.length);
+				
+					if(i==tempArray.length -1) {
+						break;
+					}
+				}
+				//System.out.println("While loop has finished");
+				
+				
+				
+				}
+				//System.out.println("The current char is " + tempArray[i]);
+				
+				if(!variables.containsKey(temp)) {
+				
+				variables.put(temp, default1);		//Initializing variable into HashMap, with default value of 0.0
+				
+			}
+				output.add(temp);
+			
+			//IF none of these if statements hold true, then we assume the char is an operator +-*/()
+			
+			//this is a dynamic temporary variable named "check"
+			//It converts the character from the array if the other if statements are not valid
+			String check = Character.toString(tempArray[i]);
+			
+			
+			
+			if(priorities.containsKey(check)) {		//If it is 
+				//System.out.println("We have in our HashMap " + check);
+				Precedence(operators,priorities, check, output);				//PRECEDENCE METHOD
+				//operators.push(check);
+			}
+			
+			
+}
+	
+	}
+	EmptyStack(operators, output);		//EMPTY STACK METHOD
+	//PrintOutput(output);
+	PostFixEval(output,variables);
+	
+}
 private static void Operation(Stack<String> eval, HashMap<String, Double> variables) {
 	// TODO Auto-generated method stub
 	
 	//FINAL STACK TO POP OUT ANSWER
 	Stack<String> answer = new Stack<String>();
 	
-	boolean isAssignment = false;
-	
+	//boolean isAssignment = false;
+	/*
 	System.out.println("Processing Stack:");
 	for(String p : eval) { 
 		System.out.println(p.toString()); 
-		}
+		}*/
 	
 	if(eval.peek().equals("+") || eval.peek().equals("-") || eval.peek().equals("*") || eval.peek().equals("/") || eval.peek().equals("=")) {
 		String operator = eval.peek();	//we assign operator and clear it from stack
 		eval.pop();
-		System.out.println("Operator detected, new peek is " + eval.peek());
+		//System.out.println("Operator detected, new peek is " + eval.peek());
 		
 		//Initiate switch cases, the number evaluation will begin on the top two numbers
 		switch(operator) {
@@ -341,19 +532,55 @@ private static void Operation(Stack<String> eval, HashMap<String, Double> variab
 //https://stackoverflow.com/questions/36252878/can-you-use-a-while-loop-inside-a-case-in-switch-statement-in-c				
 				
 			case "=":
-				isAssignment = true;
-				Equals(eval, variables , answer);
+				
+				String j = eval.peek();
+				
+				if(!isNumeric(j)) {
+					break;
+				}
+				
+				eval.pop();
+				String i = eval.peek();
+				//eval.pop();
+				Assignment(i,j,eval,variables);
+				//isAssignment = true;
+				//Equals(eval, variables , answer);	// answer is only for assignment
+				
+				
 				break;
 		}
 	}
 	
-	/*
-	if(isAssignment == true) {
-		Assignment(answer, variables);
-	}
-	*/
+	
+	
+	
 }
 
+
+private static void Assignment(String i, String j, Stack<String> eval, HashMap<String, Double> variables) {
+	// TODO Auto-generated method stub
+	
+	double assigner = Double.parseDouble(j);
+	//i = eval.peek();
+	
+	while(!eval.isEmpty()) {
+		variables.replace(eval.peek(), assigner);
+		eval.pop();
+		//i = eval.peek();
+	}
+	
+	//The right value is always numberic
+	/*if(isNumeric(j) == true) {
+		System.out.println(j + " is numeric");
+		
+		double convert = Double.parseDouble(j);
+		
+		variables.put(i, convert);
+		System.out.println("The value of " + i + " is " + variables.get(i));
+	}*/
+}
+
+///////////////////////////////////////////IS NUMERIC?////////////////////////////////////////////////////
 public static boolean isNumeric(String str)
 {
   try
@@ -369,7 +596,7 @@ public static boolean isNumeric(String str)
 
 
 ////////////////////////////////////////////// OPERATION IS ASSIGNMENT /////////////////////////////////////
-private static void Assignment(Stack<String> answer, HashMap<String, Double> variables) {
+/*private static void Assignment(Stack<String> answer, HashMap<String, Double> variables) {
 	// TODO Auto-generated method stub
 	
 
@@ -396,15 +623,18 @@ private static void Assignment(Stack<String> answer, HashMap<String, Double> var
 		
 	}
 		
-	}else {
+	}
+	else {
 		System.out.println("ERROR: VARIABLES HAVE NOT BEEN INITIALIZED");
 	}
-	
+	System.out.println("The value of a is " + variables.get("a"));
 }
-
+*/
 //Check if the variable has a hashmap default value otherwise operation invalid( It should work though )
 //We assign whatever one variable is to a nother ( usually a number to a variable )
 //We store that in the hashmap
+
+/*
 private static void Equals(Stack<String> eval, HashMap<String, Double> variables, Stack<String> answer) {
 	// TODO Auto-generated method stub
 	
@@ -415,7 +645,7 @@ private static void Equals(Stack<String> eval, HashMap<String, Double> variables
 	}
 	
 }
-
+*/
 
 
 //The rest of these should be pretty basic
@@ -490,6 +720,7 @@ private static void Addition(String a, String b, Stack<String> eval) {
 }
 
 ////////////////////////////////////////////////////////////////////////////PRINTS OUT THE POSTFIX EXPRESSION//////////////////////////////////////////////////////////	
+/* TEST POSTFIX EXPRESSION
 private static void PrintOutput(Queue<String> output) {
 		// TODO Auto-generated method stub
 	
@@ -499,7 +730,7 @@ private static void PrintOutput(Queue<String> output) {
 			}
 
 		}
-
+*/
 
 	/////////////////////////////////////////////////////////////////////EMPTY STACK AT END/////////////////////////////////////////////////////////////////////////	
 	private static void EmptyStack(Stack<String> operators, Queue<String> output) {
@@ -508,7 +739,7 @@ private static void PrintOutput(Queue<String> output) {
 		while(!operators.isEmpty()) {
 			String temp = operators.peek();
 			output.add(temp);
-			System.out.println("Adding from stack to output " + temp );
+			//System.out.println("Adding from stack to output " + temp );
 			operators.pop();
 		}
 		
@@ -524,7 +755,7 @@ private static void PrintOutput(Queue<String> output) {
 		//If empty then simply push
 		if(operators.isEmpty()) {
 			operators.push(check);
-			System.out.println("Pushed " + operators.peek() + " to empty stack");
+			//System.out.println("Pushed " + operators.peek() + " to empty stack");
 			return;	//Return, otherwise it will run into some errors.
 		}
 		
@@ -532,7 +763,7 @@ private static void PrintOutput(Queue<String> output) {
 		
 		
 		if(priorities.get(temp) == priorities.get(check)) {
-			System.out.println(temp +  " has same precedence as " + check);
+			//System.out.println(temp +  " has same precedence as " + check);
 			output.add(operators.peek());
 			operators.pop();
 			operators.push(check);
@@ -540,12 +771,12 @@ private static void PrintOutput(Queue<String> output) {
 		
 		//Lower Precedence ( NEEDS FIXING )
 		if(priorities.get(temp) > priorities.get(check))  {
-			System.out.println(temp + " Is greater than " + check);
+			//System.out.println(temp + " Is greater than " + check);
 			
 			
 			//ERROR
 			while(priorities.get(temp) > priorities.get(check)) {
-				System.out.println("Adding " + operators.peek());
+				//System.out.println("Adding " + operators.peek());
 				output.add(operators.peek());
 				operators.pop();
 				
@@ -567,8 +798,8 @@ private static void PrintOutput(Queue<String> output) {
 		
 		//Higher Precedence ( GOOD! )
 		if(priorities.get(temp) < priorities.get(check))  {
-			System.out.println(temp + " Is less than " + check);
-			System.out.println("Inserting " + check);
+			//System.out.println(temp + " Is less than " + check);
+			//System.out.println("Inserting " + check);
 			operators.push(check);
 		}
 		
@@ -583,7 +814,7 @@ private static void PrintOutput(Queue<String> output) {
 private static boolean AskEmpty(Stack<String> operators) {
 	// TODO Auto-generated method stub
 	if(operators.isEmpty()) {
-		System.out.println("Stack is Empty, stopping process");
+		//System.out.println("Stack is Empty, stopping process");
 		return true;
 	}
 	return false;
